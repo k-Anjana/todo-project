@@ -43,6 +43,32 @@ def get_data(token):
         return None
 
 if 'logged_in' not in st.session_state or not st.session_state['logged_in']:
+
+    st.markdown(
+         f"""
+         <style>
+         .stApp {{
+             background-image: url("https://www.shutterstock.com/image-photo/plain-yellow-solid-color-background-260nw-1804556662.jpg");
+             background-attachment: fixed;
+             background-size: cover
+         }}
+         </style>
+         """,
+         unsafe_allow_html=True
+     )
+
+
+    col1,col2,col3=st.columns(3)
+    
+    with col2:
+        col1,col2,col3=st.columns(3)
+        
+        with col1:
+            todo_logo="/home/jagadish/Downloads/todo_logo2.png"
+            st.image(todo_logo, caption="", width=100)
+
+        with col2:
+            st.markdown("<h1 style='text-align: center; '>TODO </h1> <br>", unsafe_allow_html=True)
     
     st.markdown("<h1 style='text-align: center; '>LOGIN</h1> <br>", unsafe_allow_html=True)
     col1,col2,col3 = st.columns(3)
