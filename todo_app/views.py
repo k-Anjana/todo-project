@@ -47,7 +47,7 @@ def update(request,username,task,description,status,upload_file):
     return response_data
 
 def delete(request,username,task):
-    record=Tasks.objects.filter(username=username,task=task)
+    record=Tasks.objects.filter(username=username,task=task).delete()
     response_data={'message':'Task deleted successfully'}
     return response_data
 
