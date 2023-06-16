@@ -7,6 +7,7 @@ import jwt
 from django.conf import settings
 from rest_framework.response import Response
 from .models import Tasks
+from django.core.files.storage import default_storage
 from django.views.decorators.csrf import csrf_exempt
 
 def index(request):
@@ -35,10 +36,12 @@ def fetch_total(request,username):
     response_data={"tasklist":task_list,"statuslist":status_list}
     return response_data
 
-def update(request,username,task,description,status):
+def update(request,username,task,description,status,upload_file):
     record=Tasks.objects.filter(username=username,task=task,status='pending').first()
     record.description=description
     record.status='done'
+    save_directory = 'taskfiles/'
+    record.file = default_storage.save(save_directory + upload_file.name, upload_file)
     record.save()
     response_data={"message":"Task status updated successfully"}
     return response_data
@@ -75,12 +78,12 @@ class Todo(APIView):
             task = self.request.GET.get('task')
             status = self.request.GET.get('status')
             description = self.request.GET.get('description')
-            uploaded_file = self.request.FILES.get('file')
+            upload_file = self.request.FILES.get('file')
             
             if Type == 'insert':
                 response=insert(request,username,task,description,status)
             if Type == 'update':
-                response=update(request,username,task,description,status)
+                response=update(request,username,task,description,status,upload_file)
 
             return JsonResponse(response)
                 

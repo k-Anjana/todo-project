@@ -3,6 +3,7 @@ import requests
 import json
 import pandas as pd
 from streamlit_option_menu import option_menu
+from streamlit_modal import Modal
 
 
 st.set_page_config(layout="wide")
@@ -115,22 +116,30 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
                 task=record['tasklist']
                 for item in task:
                     task_button=st.checkbox(item,key=item)
+                    modal = Modal(key="key",title="file_uploader")
                     if task_button:
-                        description=st.text_input("Description")
-                        add_description=st.button("Add Description")
-                        if add_description:
-                            url=local_host+'todo/?type=update'
-                            headers = {'Authorization': f'Bearer {token}'}
-                            params={
-                                "username":username,
-                                "task":item,
-                                "description":description,
-                                "status":"done",
-                            }
-                            update_response=requests.post(url,headers=headers,params=params)
-                            if update_response.status_code==200:
-                                update_message=update_response.json()
-                                st.write(update_message['message'])
+                        with st.container():
+                            with st.form(key="upload_form",clear_on_submit=True):
+                                description = st.text_area("Description")
+                                file=st.file_uploader("please choose a file")
+                                submit = st.form_submit_button("submit")
+                                if description:
+                                    if submit:
+                                        url=local_host+'todo/?type=update'
+                                        headers = {'Authorization': f'Bearer {token}'}
+                                        params={
+                                            "username":username,
+                                            "task":item,
+                                            "description":description,
+                                            "status":"done",
+                                        }
+                                        files={
+                                            'file':file
+                                        }
+                                        update_response=requests.post(url,headers=headers,params=params,files=files)
+                                        if update_response.status_code==200:
+                                            update_message=update_response.json()
+                                            st.write(update_message['message'])
 
     if selected=="History":
         url=local_host+'todo/?type=fetch_total'
