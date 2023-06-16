@@ -46,6 +46,11 @@ def update(request,username,task,description,status,upload_file):
     response_data={"message":"Task status updated successfully"}
     return response_data
 
+def delete(request,username,task):
+    record=Tasks.objects.filter(username=username,task=task)
+    response_data={'message':'Task deleted successfully'}
+    return response_data
+
 class Todo(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -84,6 +89,8 @@ class Todo(APIView):
                 response=insert(request,username,task,description,status)
             if Type == 'update':
                 response=update(request,username,task,description,status,upload_file)
+            if Type == 'delete':
+                response=delete(request,username,task)
 
             return JsonResponse(response)
                 

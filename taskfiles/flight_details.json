@@ -1,0 +1,14 @@
+{
+  "list of sources":
+  [
+    "Hyderabad","Bangalore","Mumbai"
+  ],
+  "list of destinations":
+  [
+    "Hyderabad","Bangalore","Mumbai"
+  ],
+  "Flights":
+  {
+    "Hyderabad+Bangalore":[],"Hyderabad+Mumbai":[],"Mumbai+Bangalore":[]
+  }
+}
