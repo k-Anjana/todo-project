@@ -183,18 +183,63 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
                             if response.status_code==200:
                                 delete_message=response.json()
                                 st.write(delete_message['message'])
-                        
-    if selected=="History":
-        url=local_host+'todo/?type=fetch_total'
-        headers = {'Authorization': f'Bearer {token}'}
-        params={
-            "username":username
-        }
-        response=requests.get(url,headers=headers,params=params)
-        if response.status_code==200:
-            task_history=response.json()
-            df = pd.DataFrame(task_history)
-            df.index = [i+1 for i in range(len(df))]
-            df.index.name = 'S.No'
-            st.dataframe(df, height=350)       
+        
+            else:
+                st.error("Unable to fetch the data")
 
+                
+    if selected=="History":
+        col1,col2=st.columns(2)
+
+        with col1:
+            url=local_host+'todo/?type=fetch_total'
+            headers = {'Authorization': f'Bearer {token}'}
+            params={
+                "username":username
+            }
+            response=requests.get(url,headers=headers,params=params)
+            if response.status_code==200:
+                task_history=response.json()
+                st.header("Total Tasks")
+                df = pd.DataFrame(task_history)
+                df.index = [i+1 for i in range(len(df))]
+                df.index.name = 'S.No'
+                st.dataframe(df, height=350)
+
+        with col2:
+            params={
+                "username":username,
+            }     
+        
+            url = local_host + "todo/?type=fetch_done"
+            headers = {'Authorization': f'Bearer {token}'}
+            response = requests.get(url,headers=headers,params=params)
+            
+            if response.status_code == 200:
+                record = response.json()
+                tasks = record['tasks']
+                files = record['files']
+                description = record['description']
+                st.header("Completed Tasks")
+                for i in range(len(tasks)):
+                    done_task = st.button(f'{i+1}.{tasks[i]}')
+                    button_style = """
+                        <style>
+                        .stButton>button {
+                            background: none;
+                            border: none;
+                            padding: 0;
+                            margin: 0;
+                            font-size: inherit;
+                            font-family: inherit;
+                            cursor: pointer;
+                            outline: inherit;
+                        }
+                        </style>
+                    """
+                    st.markdown(button_style, unsafe_allow_html=True)
+                    if done_task:
+                        st.write("Description:", description[i])                        
+                        st.write("Click the link to download the file:", files[i])         
+            else:
+                st.error("Unable to fetch the data")       
