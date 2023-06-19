@@ -68,13 +68,13 @@ if 'logged_in' not in st.session_state or not st.session_state['logged_in']:
             st.image(todo_logo, caption="", width=100)
 
         with col2:
-            st.markdown("<h1 style='text-align: center; '>TODO APP</h1> <br>", unsafe_allow_html=True)
-    
-    st.markdown("<h1 style='text-align: center; '>Login</h1> <br>", unsafe_allow_html=True)
+            st.header('TODO APP')
+
     col1,col2,col3 = st.columns(3)
     with col1:
         st.write("")
     with col2:
+        st.header("Login")
         username = st.text_input("Username")
         password = st.text_input("Password", type="password")
         col1, col2 ,col3= st.columns(3)
@@ -127,7 +127,7 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
         col1,col2=st.columns(2)
 
         with col1:
-            with st.form(key="form",clear_on_submit=True):
+            with st.form(key="adddtask_form",clear_on_submit=True):
                 task=st.text_input("Task")
                 add_button=st.form_submit_button("Add Task")
             record_data={
@@ -160,12 +160,12 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
                     for item in range(len(task)):
                         task_button=st.checkbox(task[item],key=f'{item}{task[item]}')
                         if task_button:
-                            update_button=st.radio("",("Complete task","Delete task"),key=f'{item}')
+                            update_button=st.radio("Complete or Delete",("Complete task","Delete task"),key=f'{item}')
 
                             if update_button=='Complete task':
 
                                 with st.container():
-                                    with st.form(key=f"a{item}",clear_on_submit=True):
+                                    with st.form(key=f"update_form.{item}",clear_on_submit=True):
                                         description = st.text_area("Description")
                                         file=st.file_uploader("please choose a file")
                                         submit = st.form_submit_button("submit")
@@ -175,7 +175,7 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
                                                 headers = {'Authorization': f'Bearer {token}'}
                                                 params={
                                                     "username":username,
-                                                    "task":item,
+                                                    "task":task[item],
                                                     "description":description,
                                                     "status":"done",
                                                 }
@@ -185,6 +185,7 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
                                                 update_response=requests.post(url,headers=headers,params=params,files=files)
                                                 if update_response.status_code==200:
                                                     update_message=update_response.json()
+                                                    st.write(update_message)
                                                     st.write(update_message['message'])
                                                     st.experimental_rerun()
 
@@ -194,7 +195,7 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
                                 headers = {'Authorization': f'Bearer {token}'}
                                 params={
                                     "username":username,
-                                    "task":item,
+                                    "task":task[item],
                                 }
                                 response=requests.post(url,headers=headers,params=params)
                                 if response.status_code==200:
@@ -222,7 +223,7 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
                 df = pd.DataFrame(task_history)
                 df.index = [i+1 for i in range(len(df))]
                 df.index.name = 'S.No'
-                st.dataframe(df, height=350)
+                st.dataframe(df, height=None)
 
         with col2:
             params={
