@@ -100,6 +100,19 @@ if 'logged_in' not in st.session_state or not st.session_state['logged_in']:
 
 if 'logged_in' in st.session_state and st.session_state['logged_in']:
 
+    st.markdown(
+         f"""
+         <style>
+         .stApp {{
+             background-image: url("https://www.shutterstock.com/image-illustration/soft-blurred-background-night-evening-260nw-708688963.jpg");
+             background-attachment: fixed;
+             background-size: cover
+         }}
+         </style>
+         """,
+         unsafe_allow_html=True
+     )
+
     token=st.session_state['token']
     username=st.session_state['username']
 
@@ -132,63 +145,65 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
                     st.write("Task added successfully")
                 
         with col2:
-            url=local_host+'todo/?type=fetch_pending'
-            headers = {'Authorization': f'Bearer {token}'}
-            params={
-                "username":username
-            }
-            response=requests.get(url,headers=headers,params=params)
+            col1,col2=st.columns([1,2])
+            with col2:
+                url=local_host+'todo/?type=fetch_pending'
+                headers = {'Authorization': f'Bearer {token}'}
+                params={
+                    "username":username
+                }
+                response=requests.get(url,headers=headers,params=params)
 
-            if response.status_code==200:
-                record=response.json()
-                task=record['tasklist']
-                for item in range(len(task)):
-                    task_button=st.checkbox(task[item],key=f'{item}{task[item]}')
-                    if task_button:
-                        update_button=st.radio("",("Complete task","Delete task"),key=f'{item}')
+                if response.status_code==200:
+                    record=response.json()
+                    task=record['tasklist']
+                    for item in range(len(task)):
+                        task_button=st.checkbox(task[item],key=f'{item}{task[item]}')
+                        if task_button:
+                            update_button=st.radio("",("Complete task","Delete task"),key=f'{item}')
 
-                        if update_button=='Complete task':
+                            if update_button=='Complete task':
 
-                            with st.container():
-                                with st.form(key=f"a{item}",clear_on_submit=True):
-                                    description = st.text_area("Description")
-                                    file=st.file_uploader("please choose a file")
-                                    submit = st.form_submit_button("submit")
-                                    if description:
-                                        if submit:
-                                            url=local_host+'todo/?type=update'
-                                            headers = {'Authorization': f'Bearer {token}'}
-                                            params={
-                                                "username":username,
-                                                "task":item,
-                                                "description":description,
-                                                "status":"done",
-                                            }
-                                            files={
-                                                'file':file
-                                            }
-                                            update_response=requests.post(url,headers=headers,params=params,files=files)
-                                            if update_response.status_code==200:
-                                                update_message=update_response.json()
-                                                st.write(update_message['message'])
-                                                st.experimental_rerun()
+                                with st.container():
+                                    with st.form(key=f"a{item}",clear_on_submit=True):
+                                        description = st.text_area("Description")
+                                        file=st.file_uploader("please choose a file")
+                                        submit = st.form_submit_button("submit")
+                                        if description:
+                                            if submit:
+                                                url=local_host+'todo/?type=update'
+                                                headers = {'Authorization': f'Bearer {token}'}
+                                                params={
+                                                    "username":username,
+                                                    "task":item,
+                                                    "description":description,
+                                                    "status":"done",
+                                                }
+                                                files={
+                                                    'file':file
+                                                }
+                                                update_response=requests.post(url,headers=headers,params=params,files=files)
+                                                if update_response.status_code==200:
+                                                    update_message=update_response.json()
+                                                    st.write(update_message['message'])
+                                                    st.experimental_rerun()
 
-                        elif update_button=='Delete task':
-                            
-                            url=local_host+'todo/?type=delete'
-                            headers = {'Authorization': f'Bearer {token}'}
-                            params={
-                                "username":username,
-                                "task":item,
-                            }
-                            response=requests.post(url,headers=headers,params=params)
-                            if response.status_code==200:
-                                delete_message=response.json()
-                                st.write(delete_message['message'])
-                                st.experimental_rerun()
-        
-            else:
-                st.error("Unable to fetch the data")
+                            elif update_button=='Delete task':
+                                
+                                url=local_host+'todo/?type=delete'
+                                headers = {'Authorization': f'Bearer {token}'}
+                                params={
+                                    "username":username,
+                                    "task":item,
+                                }
+                                response=requests.post(url,headers=headers,params=params)
+                                if response.status_code==200:
+                                    delete_message=response.json()
+                                    st.write(delete_message['message'])
+                                    st.experimental_rerun()
+            
+                else:
+                    st.error("Unable to fetch the data")
 
                 
     if selected=="History":
