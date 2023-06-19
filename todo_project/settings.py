@@ -142,3 +142,7 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=3),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
+
+MEDIA_ROOT = BASE_DIR /"taskfiles"
+
+MEDIA_URL = "/taskfiles/"

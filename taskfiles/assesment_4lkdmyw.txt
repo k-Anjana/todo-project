@@ -1,0 +1,55 @@
+import csv
+
+
+# valid departments
+valid_departments = ["bigdata", "development", "devops"]
+
+# list to store the user details
+user_details = []
+
+# Loop for 10 times to prompt user for their name, age, department, and salary
+for i in range(2):
+    print("Enter details for user", i+1)
+    
+    # Prompt user for their name
+    name = input("Enter your name: ")
+    while not name.isalpha():
+        name = input("Invalid input. Please enter your name using only letters: ")
+        
+    # Prompt user for their age
+    age = input("Enter your age: ")
+    while not age.isdigit():
+        age = input("Invalid input. Please enter your age as a positive integer: ")
+    age = int(age)
+    
+    # Prompt user for their department
+    department = input("Enter your department (bigdata, development, or devops): ").lower()
+    while department not in valid_departments:
+        department = input("Invalid input. Please enter a valid department (bigdata, development, or devops): ").lower()
+        
+    # Prompt user for their salary
+    salary = input("Enter your salary: ")
+    while not (salary.replace('.','').isdigit() and (20000 <= float(salary) <= 200000)):
+        salary = input("Invalid input. Please enter your salary as a positive number between 20000 and 200000: ")
+    salary = float(salary)
+    
+    # Add the user's details to the list
+    user_details.append({"Name": name, "Age": age, "Department": department, "Salary": salary})
+
+# Find the second-highest salary among the user details
+user_details.sort(key=lambda x: x["Salary"], reverse=True)
+second_highest_salary = user_details[1]["Salary"]
+
+# Print out the second-highest salary
+print("The second-highest salary is:", second_highest_salary)
+
+# Save user details to a CSV file
+with open("user_details.csv", "w", newline="") as csvfile:
+    fieldnames = ["Name", "Age", "Department", "Salary"]
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+    writer.writeheader()
+    for user in user_details:
+        writer.writerow(user)
+
+# Print out a confirmation message
+print("User details saved to user_details.csv")

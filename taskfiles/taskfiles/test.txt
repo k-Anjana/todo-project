@@ -1,0 +1,54 @@
+modal = Modal(key="key",title="update")
+with modal.container():
+                            with st.form(key="forms",clear_on_submit=True):
+                                description = st.text_area("Description")
+                                file=st.file_uploader("please choose a file")
+                                submit = st.form_submit_button("submit")
+                                if description:
+                                    if submit :
+                                        url = local_host + "todo/?type=uploadfile"
+                                        headers = {'Authorization': f'Bearer {token}'}
+                                        params = {
+                                            "userName":UserName,
+                                            "description":description,
+                                            "status":"Completed",
+                                            "task":task[i],
+                                        }
+                                        files = {
+                                            'file': file
+                                        }
+                                        st.success("Submited successfully")
+                                        response = requests.post(url,headers=headers,params=params,files=files)
+                                        if response.status_code == 200:
+                                            st.success("WOW")
+                                        else:
+                                            st.error("ERROR")
+
+
+
+with col2:
+        col1,col2 = st.columns(2)
+        with col2:
+            image = "/home/gopikrishna/Todo/Todo_Env/Todo_Project/images/profile_photo.jpg"
+            st.image(image, caption=UserName, width=180)
+        
+save_directory = 'files/'
+    updating_obj.file = default_storage.save(save_directory + uploaded_file.name, uploaded_file)
+
+
+
+update_button=st.radio("",("Delete task","Complete task"))
+                    
+            if update_button=='Delete task':
+                url=local_host+'todo/?type=delete'
+                headers = {'Authorization': f'Bearer {token}'}
+                params={
+                    "username":username,
+                    "task":item,
+                }
+                response=requests.post(url,headers=headers,params=params)
+                if response.status_code==200:
+                    delete_message=response.json()
+                    st.write(delete_message['message'])
+                    
+                    elif update_button=='Complete task':

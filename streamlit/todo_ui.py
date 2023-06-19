@@ -61,16 +61,16 @@ if 'logged_in' not in st.session_state or not st.session_state['logged_in']:
     col1,col2,col3=st.columns(3)
     
     with col2:
-        col1,col2,col3=st.columns(3)
+        col1,col2=st.columns([1,2])
         
         with col1:
             todo_logo="/home/jagadish/Downloads/todo_logo2.png"
             st.image(todo_logo, caption="", width=100)
 
         with col2:
-            st.markdown("<h1 style='text-align: center; '>TODO </h1> <br>", unsafe_allow_html=True)
+            st.markdown("<h1 style='text-align: center; '>TODO APP</h1> <br>", unsafe_allow_html=True)
     
-    st.markdown("<h1 style='text-align: center; '>LOGIN</h1> <br>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; '>Login</h1> <br>", unsafe_allow_html=True)
     col1,col2,col3 = st.columns(3)
     with col1:
         st.write("")
@@ -114,8 +114,9 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
         col1,col2=st.columns(2)
 
         with col1:
-            task=st.text_input("Task")
-            add_button=st.button("Add Task")
+            with st.form(key="form",clear_on_submit=True):
+                task=st.text_input("Task")
+                add_button=st.form_submit_button("Add Task")
             record_data={
                 "username":username,
                 "task":task,
@@ -123,6 +124,7 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
                 "status":"pending",
             }
             if add_button:
+                
                 url=local_host+'todo/?type=insert'
                 headers = {'Authorization': f'Bearer {token}'}
                 response=requests.post(url,headers=headers,params=record_data)
@@ -140,16 +142,15 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
             if response.status_code==200:
                 record=response.json()
                 task=record['tasklist']
-                for item in task:
-                    task_button=st.checkbox(item,key=item)
-                    modal = Modal(key="key",title="file_uploader")
+                for item in range(len(task)):
+                    task_button=st.checkbox(task[item],key=f'{item}{task[item]}')
                     if task_button:
-                        update_button=st.radio("",("Complete task","Delete task"))
+                        update_button=st.radio("",("Complete task","Delete task"),key=f'{item}')
 
                         if update_button=='Complete task':
 
                             with st.container():
-                                with st.form(key="upload_form",clear_on_submit=True):
+                                with st.form(key=f"a{item}",clear_on_submit=True):
                                     description = st.text_area("Description")
                                     file=st.file_uploader("please choose a file")
                                     submit = st.form_submit_button("submit")
@@ -170,6 +171,7 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
                                             if update_response.status_code==200:
                                                 update_message=update_response.json()
                                                 st.write(update_message['message'])
+                                                st.experimental_rerun()
 
                         elif update_button=='Delete task':
                             
@@ -183,6 +185,7 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
                             if response.status_code==200:
                                 delete_message=response.json()
                                 st.write(delete_message['message'])
+                                st.experimental_rerun()
         
             else:
                 st.error("Unable to fetch the data")
