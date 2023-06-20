@@ -3,7 +3,6 @@ import requests
 import json
 import pandas as pd
 from streamlit_option_menu import option_menu
-from streamlit_modal import Modal
 
 
 st.set_page_config(layout="wide")
