@@ -55,7 +55,6 @@ def fetch_total(request,username):
 
 def update(request,username,task,description,status,upload_file):
     record=Tasks.objects.filter(username=username,task=task,status='pending').first()
-    print(record)
     record.description=description
     record.status='done'
     save_directory = 'taskfiles/'
