@@ -269,6 +269,6 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
                     st.error("Unable to fetch the data")  
 
     with col4:
-        profile_photo="/home/jagadish/Downloads/profile-pic1.png"
+        profile_photo="https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
         st.image(profile_photo,width=350)
         st.markdown(f"<h1 style='text-align: center; '>{username}</h1> <br>", unsafe_allow_html=True)

@@ -75,6 +75,9 @@ def savetask(request,task):
     response_data={'message':'Task session saved successfully'}
     return response_data
 
+def gettask(request):
+    response_data={}
+
 class Todo(APIView):
     permission_classes = [IsAuthenticated]
     
