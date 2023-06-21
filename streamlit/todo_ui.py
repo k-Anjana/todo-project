@@ -63,8 +63,8 @@ if 'logged_in' not in st.session_state or not st.session_state['logged_in']:
         col1,col2=st.columns([1,2])
         
         with col1:
-            todo_logo="/home/jagadish/Downloads/todo_logo2.png"
-            st.image(todo_logo, caption="", width=100)
+            todo_logo="https://icon-library.com/images/todo-icon/todo-icon-5.jpg"
+            st.image(todo_logo, caption="", width=170)
 
         with col2:
             st.header('TODO APP')
@@ -132,6 +132,14 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
                 with st.form(key="adddtask_form",clear_on_submit=True):
                     task=st.text_input("Task")
                     add_button=st.form_submit_button("Add Task")
+                if task:
+                    task_data={
+                        "task":task
+                    }
+                    url=local_host+'todo/?type=savetask'
+                    headers = {'Authorization': f'Bearer {token}'}
+                    response=requests.post(url,headers=headers,params=task_data)
+
                 record_data={
                     "username":username,
                     "task":task,

@@ -3,6 +3,7 @@ from django.shortcuts import HttpResponse
 from rest_framework.permissions import IsAuthenticated
 from django.http import JsonResponse
 from rest_framework.views import APIView
+from django.contrib import sessions
 import jwt
 from django.conf import settings
 from rest_framework.response import Response
@@ -68,6 +69,12 @@ def delete(request,username,task):
     response_data={'message':'Task deleted successfully'}
     return response_data
 
+def savetask(request,task):
+    task_name=request.session.get("task_name","")
+    request.session['task_name']=task
+    response_data={'message':'Task session saved successfully'}
+    return response_data
+
 class Todo(APIView):
     permission_classes = [IsAuthenticated]
     
@@ -110,6 +117,8 @@ class Todo(APIView):
                 response=update(request,username,task,description,status,upload_file)
             if Type == 'delete':
                 response=delete(request,username,task)
+            if Type == 'savetask':
+                response=savetask(request,task)
 
             return JsonResponse(response)
                 
