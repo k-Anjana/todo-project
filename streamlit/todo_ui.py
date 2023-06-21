@@ -7,7 +7,7 @@ from streamlit_option_menu import option_menu
 
 st.set_page_config(layout="wide")
 
-local_host = 'http://192.168.70.4:8007/'
+local_host = 'http://192.168.70.4:8009/'
 
 session_state = st.session_state
 
