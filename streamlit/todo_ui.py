@@ -103,7 +103,7 @@ if 'logged_in' in st.session_state and st.session_state['logged_in']:
          f"""
          <style>
          .stApp {{
-             background-image: url("https://www.shutterstock.com/image-illustration/soft-blurred-background-night-evening-260nw-708688963.jpg");
+             background-image: url("https://slidescorner.com/wp-content/uploads/2023/03/03-Baby-Blue-Pastel-Plain-Background-Wallpaper-by-SlidesCorner.com_-1-500x281.jpg");
              background-attachment: fixed;
              background-size: cover
          }}
