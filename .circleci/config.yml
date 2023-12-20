@@ -12,3 +12,9 @@ jobs:
     steps:
       - checkout
       - run: python --version
+         name: Install dependencies
+         command: pip install
+        - run: 
+           name: Run Tests
+           command: pip run test
+         
